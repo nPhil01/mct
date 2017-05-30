@@ -1,2 +1,2 @@
 # mct
-A possibility to manage and compare your coropleth maps from all over the world
+A possibility to compare your coropleth maps

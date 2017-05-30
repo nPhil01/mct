@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<title>Leaflet/Mapbox Before-After Plugin</title>
+<head>
+<!-- Setup Before-After Plugin dependencies -->
+<script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.10.3.custom.min.js"></script>
+<script type="text/javascript" src="js/jquery.ui.touch-punch.min.js"></script>
+<script type="text/javascript" src="js/jquery.beforeafter-map-0.11.js"></script>
+
+<!-- Setup Mapbox.js -->
+<link href='http://api.tiles.mapbox.com/mapbox.js/v1.3.1/mapbox.css' rel='stylesheet' />
+<!--[if lte IE 8]><link href='http://api.tiles.mapbox.com/mapbox.js/v1.3.1/mapbox.ie.css' rel='stylesheet' /><![endif]-->
+<script src='http://api.tiles.mapbox.com/mapbox.js/v1.3.1/mapbox.js'></script>
+</head>
+
+<body>
+<!-- Create a map container div and divs for your two maps -->
+<div id="map-container">
+	<!-- Make sure to give the map divs height and width -->
+	<div id="before" style="height:400px;width:500px;"></div>
+	<div id="after" style="height:400px;width:500px;"></div>
+</div>
+
+<script type="text/javascript">
+	$(function() {
+		// create a map in the "before" and "after" divs, set the view to a given place and zoom
+		// You may want to turn attributionControl off so that the Leaflet attribution doesn't slide with the slider. Place all attribution on the after map.
+		// You may also want to turn off inertia, which in some cases can cause the maps to go out of sync
+		var center = [38.895,-77.020], zoom = 12,
+		before = L.mapbox.map('before', 'urbaninstitute.Example_Pink', {attributionControl: false, inertia: false, minZoom: 12}).setView(center, zoom),
+		after = L.mapbox.map('after', 'urbaninstitute.Example_Green', {inertia: false, minZoom: 12}).setView(center, zoom);
+
+		// Call the Before-After plugin, passing through the variables that you used to setup the maps, and (optional) any options you'd like
+		$('#map-container').beforeAfter(before,after);
+	});
+</script>
+
+</body>
+</html>

@@ -1,5 +1,4 @@
-var center = [38.895, -77.020];
-var zoom = 12;
+var center = [38.895, -77.020], zoom = 12;
 var before = L.map('before', {
     attributionControl: false,
     inertia: false,

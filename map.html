@@ -6,7 +6,15 @@
 
     <link href="bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="leaflet/leaflet.css" />
-    <link rel="stylesheet" href="Leaflet.awesome-markers-2.0-develop/dist/leaflet.awesome-markers.css">
+    <link rel="stylesheet" href="beforeafter-map-0.11/css/leaflet.css">
+
+    <script type="text/javascript" src="beforeafter-map-0.11/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="beforeafter-map-0.11/js/jquery-ui-1.10.3.custom.min.js"></script>
+    <script type="text/javascript" src="beforeafter-map-0.11/js/jquery.ui.touch-punch.min.js"></script>
+    <script type="text/javascript" src="beforeafter-map-0.11/js/jquery.beforeafter-map-0.11.js"></script>
+    <script src="bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="beforeafter-map-0.11/js/leaflet.js"></script>
+    <script type="text/javascript" src="Leaflet.awesome-markers-2.0-develop/dist/leaflet.awesome-markers.js"></script>
 
 </head>
 <body>
@@ -14,18 +22,31 @@
 <div id="map-container">
     <!-- Make sure to give the map divs height and width
      I do it with the map class -->
-    <div id="before" class="map"></div>
-    <div id="after" class="map"></div>
+    <div id="before" class="map" style="height: 600px; width: 500px"></div>
+    <div id="after" class="map" style="height: 600px; width: 500px"></div>
 </div>
 
-<script type="text/javascript" src="jquery-3.2.1.js"></script>
-<script type="text/javascript" src="jquery-ui-1.12.1.custom/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
-<script type="text/javascript" src="jquery.ui.touch-punch.min.js"></script>
-<script src="bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="beforeafter-map-0.11/js/jquery.beforeafter-map-0.11.js"></script>
-<script type="text/javascript" src="leaflet/leaflet.js"></script>
-<script type="text/javascript" src="Leaflet.awesome-markers-2.0-develop/dist/leaflet.awesome-markers.js"></script>
-<script type="text/javascript" src="map.js"></script>
+<script type="text/javascript">
+    $(function() {
+        var center = [38.895, -77.020], zoom = 12;
+        var before = L.map('before', {
+            attributionControl: false,
+            inertia: false,
+            minZoom: 12
+        }).setView(center, zoom);
+
+        var after = L.map('after', {
+            inertia: false,
+            minZoom: 12
+        }).setView(center, zoom);
+
+        L.tileLayer('http://{s}.tiles.mapbox.com/v3/spatial.map-qgihrqg5/{z}/{x}/{y}.png').addTo(before); //
+        L.tileLayer('http://{s}.tiles.mapbox.com/v3/spatial.map-qgihrqg5/{z}/{x}/{y}.png').addTo(after); //
+
+        $('#map-container').beforeAfter(before, after);
+</script>
+
+<!--<script type="text/javascript" src="map.js"></script>-->
 
 
 </body>

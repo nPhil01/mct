@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Maptest</title>
+
+	<link rel="stylesheet" href="./leaflet/leaflet.css" />
+	<script src="./leaflet/leaflet.js"></script>
+	<script src="./jquery.min.js"></script>
+	<script src="./jquery-ui.min.js"></script>
+	<style>
+
+		.map {
+			height: 450px;
+			position: absolute;
+			top: 1px;
+			left: 1px;
+		}
+		#map-left {
+			width: 300px;
+			z-index: 30;
+		}
+		#map-mid {
+			width: 600px;
+			z-index: 20;
+		}
+		#map-right {
+			width: 900px;
+			z-index: 10;
+		}
+		#container {
+			position: relative;
+			border: 1px solid gray;
+			display: table;
+			z-index: 50;
+			width: 900px;
+			height: 450px;
+			border-radius: 2px;
+			margin: 0 auto;
+		}
+		h1, p{
+			text-align: center;
+		}
+
+		#dragwrapper-left{
+			position: absolute;
+			left: 285px;
+			z-index: 80;
+		}
+		#dragwrapper-right{
+			position: absolute;
+			left: 585px;
+			z-index: 80;
+		}
+		#drag-left{
+			position: absolute;
+			width: 2px;
+			background: rgb(136, 136, 136) none repeat scroll;
+			height: 450px;
+			left: 15px;
+			max-width: 2px;
+		}
+		#drag-right{
+			position: absolute;
+			width: 2px;
+			background: rgb(136, 136, 136) none repeat scroll;
+			height: 450px;
+			left: 15px;
+			max-width: 2px;
+		}
+		#draghandle-left{
+			position: relative;
+			cursor: pointer;
+			z-index: 100;
+			left: -15px;
+		}
+		#draghandle-right{
+			position: relative;
+			cursor: pointer;
+			z-index: 100;
+			left: -15px;
+			top: 426px;
+		}
+		#constraint{
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			height: 100%;
+			width:870px;
+		}
+	</style>
+
+</head>
+
+<body>
+	<h1>Comparison Slider</h1>
+	<div id="container">
+		<div id="constraint"></div>
+		<div id="dragwrapper-left">
+			<div id="drag-left">
+				<img id="draghandle-left" src="./sliders.png">
+			</div>
+		</div>
+		<div id="dragwrapper-right">
+			<div id="drag-right">
+				<img id="draghandle-right" src="./sliders.png">
+			</div></div>
+		<div id="map-left" class="map"></div>
+		<div id="map-mid" class="map"></div>
+		<div id="map-right" class="map"></div>
+	</div>
+	<p>&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors</p>
+	<p>Watercolour map: Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a></p>
+	<script>
+		var leftmap = L.map('map-left', {center: [51.505, -0.09], zoom: 13, zoomAnimation: false, attributionControl: false, zoomControl: false});
+		var midmap = L.map('map-mid', {center: [51.505, -0.09], zoom: 13, zoomAnimation: false, attributionControl: false, zoomControl: false});
+		var rightmap = L.map('map-right', {center: [51.505, -0.09], zoom: 13, zoomAnimation: false, attributionControl: false, zoomControl: false});
+
+		var basemap_options = {
+				maxZoom: 18
+		};
+
+		L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', basemap_options).addTo(leftmap);
+		L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.png', basemap_options).addTo(midmap);
+		L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', basemap_options).addTo(rightmap);
+
+		// avoid endless recursion
+		var recursing = 0;
+
+		function getCenterDistance(a, b) {
+			return (b.getSize().x/2) - (a.getSize().x/2);
+		}
+
+		function syncMaps(source, target) {
+			if(recursing > 3) {
+				recursing = 0;
+				return;
+			}
+
+			recursing += 1;
+
+			let offset = getCenterDistance(source, target);
+
+			let zoom = source.getZoom();
+			let center = source.getCenter();
+			let pixels = source.latLngToLayerPoint(center);
+			pixels.x += offset;
+
+			target.setView(source.layerPointToLatLng(pixels), source.getZoom(), { animate: false });
+		}
+
+		// register sync function
+		leftmap.on('move', function() {
+			syncMaps(leftmap, rightmap);
+			syncMaps(leftmap, midmap);
+		});
+
+		midmap.on('move', function() {
+			syncMaps(midmap, leftmap);
+			syncMaps(midmap, rightmap);
+		});
+
+		rightmap.on('move', function() {
+			syncMaps(rightmap, leftmap);
+			syncMaps(rightmap, midmap);
+		});
+
+		$('#dragwrapper-left').draggable({ containment:$('#constraint'),drag:$('#drag-left'),stop:$('#drag-left'), axis: "x" });
+		$('#dragwrapper-right').draggable({ containment:$('#constraint'),drag:$('#drag-right'),stop:$('#drag-right'), axis: "x"});
+		
+		$('#dragwrapper-left').on('drag', function() {
+			$('#map-left').width( $('#dragwrapper-left').position().left + 16);
+		})
+
+		$('#dragwrapper-right').on('drag', function() {
+			$('#map-mid').width( $('#dragwrapper-right').position().left + 16);
+		})
+
+		// call syncMaps to synchronize at the beginning
+		syncMaps(rightmap, midmap, -150);
+	</script>
+</body>
+
+</html>

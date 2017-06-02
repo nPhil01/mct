@@ -177,6 +177,18 @@
 			$('#map-mid').width( $('#dragwrapper-right').position().left + 16);
 		})
 
+		// workaround for draggable bug
+		workaround_yl = $('#dragwrapper-left').position().top + 1;
+		workaround_yr = $('#dragwrapper-left').position().top + 1;
+
+		$('#dragwrapper-left').on('dragstop', function() {
+			$("#dragwrapper-left").css({top: workaround_yl+'px'});
+		})
+
+		$('#dragwrapper-right').on('dragstop', function() {
+			$("#dragwrapper-right").css({top: workaround_yr+'px'});
+		})
+
 		// call syncMaps to synchronize at the beginning
 		syncMaps(rightmap, midmap, -150);
 	</script>

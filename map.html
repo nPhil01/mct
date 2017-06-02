@@ -1,53 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>MCT</title>
+	
+	<title>MCT</title>
 
-    <link href="bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="leaflet/leaflet.css" />
-    <link rel="stylesheet" href="beforeafter-map-0.11/css/leaflet.css">
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
 
-    <script type="text/javascript" src="beforeafter-map-0.11/js/jquery-1.10.2.min.js"></script>
-    <script type="text/javascript" src="beforeafter-map-0.11/js/jquery-ui-1.10.3.custom.min.js"></script>
-    <script type="text/javascript" src="beforeafter-map-0.11/js/jquery.ui.touch-punch.min.js"></script>
-    <script type="text/javascript" src="beforeafter-map-0.11/js/jquery.beforeafter-map-0.11.js"></script>
-    <script src="bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="beforeafter-map-0.11/js/leaflet.js"></script>
-    <script type="text/javascript" src="Leaflet.awesome-markers-2.0-develop/dist/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" integrity="sha512-07I2e+7D8p6he1SIM+1twR5TIrhUQn9+I6yjqD53JQjFiMf8EtC93ty0/5vJTZGF8aAocvHYNEDJajGdNx1IsQ==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js" integrity="sha512-A7vV8IFfih/D732iSSKi20u/ooOfj/AGehOKq0f4vLT1Zr2Y+RX7C+w8A1gaSasGtRUZpF/NZgzSAu4/Gc41Lg==" crossorigin=""></script>
+	<link href="map.css" rel="stylesheet">
 
 </head>
 <body>
 
-<div id="map-container">
-    <!-- Make sure to give the map divs height and width
-     I do it with the map class -->
-    <div id="before" class="map" style="height: 600px; width: 500px"></div>
-    <div id="after" class="map" style="height: 600px; width: 500px"></div>
-</div>
+<div id='map'></div>
+<button class='button' type="button" onclick="addGeoJsonToMap(statesData)">Map1</button>
+<button type="button" onclick="addGeoJsonToMap(statesData2)">Map2</button>
+<button type="button" onclick="addGeoJsonToMap(statesData3)">Map3</button>
 
-<script type="text/javascript">
-    $(function() {
-        var center = [38.895, -77.020], zoom = 12;
-        var before = L.map('before', {
-            attributionControl: false,
-            inertia: false,
-            minZoom: 12
-        }).setView(center, zoom);
-
-        var after = L.map('after', {
-            inertia: false,
-            minZoom: 12
-        }).setView(center, zoom);
-
-        L.tileLayer('http://{s}.tiles.mapbox.com/v3/spatial.map-qgihrqg5/{z}/{x}/{y}.png').addTo(before); //
-        L.tileLayer('http://{s}.tiles.mapbox.com/v3/spatial.map-qgihrqg5/{z}/{x}/{y}.png').addTo(after); //
-
-        $('#map-container').beforeAfter(before, after);
-</script>
-
-<!--<script type="text/javascript" src="map.js"></script>-->
-
+<script type="text/javascript" src="us_states.js"></script>
+<script type="text/javascript" src="us_states_2_variation.js"></script>
+<script type="text/javascript" src="us_states_3_variation.js"></script>
+<script type="text/javascript" src="map.js"></script>
 
 </body>
 </html>

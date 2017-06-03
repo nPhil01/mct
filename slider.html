@@ -228,8 +228,8 @@
 			var layer = e.target;
 
 			layer.setStyle({
-				weight: 5,
-				color: '#666',
+				weight: 3,
+				color: '#AACCFF',
 				dashArray: '',
 				fillOpacity: 1
 			});
@@ -271,7 +271,61 @@
 			onEachFeature: onEachFeatureR
 		}).addTo(rightmap);
 
+		// creating the difference map
+		var diffData = {
+			"type" : "FeatureCollection",
+			"features" : []
+		};
+		for (let dataset = 0; dataset < statesData.features.length; dataset++) {
+			let ldata = statesData.features[dataset];
+			let rdata = statesData2.features[dataset];
 
+			let newdata = {
+				type: "Feature",
+				id: "" + (dataset + 1) + "",
+				properties: {
+					name: ldata.properties.name,
+					density_diff: rdata.properties.density - ldata.properties.density,
+					density_left: ldata.properties.density,
+					density_right: rdata.properties.density
+				},
+				geometry: ldata.geometry
+			};
+			diffData.features.push(newdata);
+		}
+
+		function getColorDensity(d) {
+			return d > 0 ? '#80CC80' :
+				d == 0  ? '#808080' :
+				'#CC8080';
+		}
+
+		function styleDifference(feature) {
+			return {
+				weight: 2,
+				opacity: 1,
+				color: 'white',
+				dashArray: '3',
+				fillOpacity: 1,
+				fillColor: getColorDensity(feature.properties.density_diff)
+			};
+		}
+
+		function resetHighlightM(e) {
+			geojson_mid.resetStyle(e.target);
+		}
+
+		function onEachFeatureM(feature, layer) {
+			layer.on({
+				mouseover: highlightFeature,
+				mouseout: resetHighlightM
+			});
+		}
+
+		var geojson_mid = L.geoJson(diffData, {
+			style: styleDifference,
+			onEachFeature: onEachFeatureM
+		}).addTo(midmap);
 
 		// workaround reset for shape offset bug
 		$('#map-left').width(300);

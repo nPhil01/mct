@@ -24,7 +24,7 @@
 			z-index: 30;
 		}
 		#map-mid {
-			width: 600px;
+			width: 900px; /* Also part of the workaround. */
 			z-index: 20;
 		}
 		#map-right {
@@ -271,8 +271,11 @@
 			onEachFeature: onEachFeatureR
 		}).addTo(rightmap);
 
-		// workaround for shape offset bug
+
+
+		// workaround reset for shape offset bug
 		$('#map-left').width(300);
+		$('#map-mid').width(600);
 
 		// call syncMaps to synchronize at the beginning
 		rightmap.setView([37.8, -96], 4);

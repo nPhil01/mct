@@ -299,15 +299,25 @@
 			onEachFeature: onEachFeatureR
 		}).addTo(rightmap);
 
-		// creating the difference map
+		// creating the difference map + color scale
 		var diffData = {
 			"type" : "FeatureCollection",
 			"features" : []
 		};
+		var colormin = 0;
+		var colormax = 0;
+		var leftlowerhalf = 0;
+		var leftmiddlequarter = 0;
+
+		var rightmiddlequarter = 0;
+		var rightupperhalf = 0;
+		// the inner quarters are < or > 0
+
 		for (let dataset = 0; dataset < statesData.features.length; dataset++) {
 			let ldata = statesData.features[dataset];
 			let rdata = statesData2.features[dataset];
 
+			// generate difference choropleth dataset
 			let newdata = {
 				type: "Feature",
 				id: "" + (dataset + 1) + "",
@@ -319,13 +329,27 @@
 				},
 				geometry: ldata.geometry
 			};
+
+			// search for lowest/highest values
+			if (newdata.properties.density_diff < colormin) colormin = newdata.properties.density_diff;
+			if (newdata.properties.density_diff > colormax) colormax = newdata.properties.density_diff;
 			diffData.features.push(newdata);
 		}
 
+		// create color scale
+		leftlowerhalf = colormin / 2;
+		leftmiddlequarter = colormin / 4;
+		rightupperhalf = colormax / 2;
+		rightmiddlequarter = colormax / 4;
+
 		function getColorDensity(d) {
-			return d > 0 ? '#80CC80' :
-				d == 0  ? '#808080' :
-				'#CC8080';
+			return d < leftlowerhalf ? '#ff3f3f' :
+				d > rightupperhalf ? '#20ed83' :
+				d < leftmiddlequarter ? "#ff993f" :
+				d < 0 ? "#ffe23f" :
+				d > rightmiddlequarter ? "#3fff5c" :
+				d > 0 ? "#c0ff42" :
+				'#ffff3f';
 		}
 
 		function styleDifference(feature) {

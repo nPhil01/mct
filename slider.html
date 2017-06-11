@@ -38,7 +38,7 @@
 			border: 1px solid gray;
 			display: table;
 			z-index: 50;
-			width: 1020px;
+			width: 1040px;
 			height: 450px;
 			border-radius: 2px 2px 0px 0px;
 			margin: 0 auto;
@@ -99,7 +99,7 @@
 			border: 1px solid gray;
 			border-top: 0px;
 			display: block;
-			width: 1020px;
+			width: 1040px;
 			border-radius: 0px 0px 2px 2px;
 			margin: 0 auto;
       position: relative;
@@ -442,7 +442,7 @@
 		
 		// create the legend of the right and left map
 		createLegend = function (label) {
-			var div = '<div style="width:110px"><h4>'+label+'</h4>';
+			var div = '<div style="width:130px"><h4>'+label+'</h4>';
 			var	grades = [0, 10, 20, 50, 100, 200, 500, 1000];
 
 			
@@ -457,20 +457,17 @@
 		
 		// create the legend of the differences
 		createLegendDif = function (label) {
-			var div = '<div style="width:110px"><h4>'+label+'</h4>';
+			var div = '<div style="width:130px"><h4>'+label+'</h4>';
 			var	grades = [leftlowerhalf, leftmiddlequarter,0, rightmiddlequarter, rightupperhalf];
-				
-			div += '<div style="background:' + getColorDensity(leftlowerhalf-1) + ';"> < ' + leftlowerhalf+'</div>' ;
+
+			div += '<div style="background:' + getColorDensity(leftlowerhalf-1) + ';"> &lt; ' + leftlowerhalf+'</div>' ;
+      div += '<div style="background:' + getColorDensity( leftlowerhalf) + ';">' + leftlowerhalf + ' &ndash; &lt; ' + leftmiddlequarter + '</div>' ;
+      div += '<div style="background:' + getColorDensity( leftmiddlequarter) + ';">' + leftmiddlequarter + ' &ndash; &lt; 0</div>' ;
+			div += '<div style="background:' + getColorDensity(0) + ';">0</div>' ;
+      div += '<div style="background:' + getColorDensity( rightmiddlequarter) + ';">&gt; 0 &ndash; ' + rightmiddlequarter + '</div>' ;
+      div += '<div style="background:' + getColorDensity( rightupperhalf) + ';">&gt; ' + rightmiddlequarter + ' &ndash; ' + rightupperhalf + '</div>' ;
+			div += '<div style="background:' + getColorDensity(rightupperhalf+1) + ';"> &gt; ' + rightupperhalf+'</div>' ;
 			
-			for (var i = 0; i < grades.length; i++) {
-				div += '<div style="background:' + getColorDensity(grades[i]) + ';">'+ grades[i];
-				if(i <grades.length-1){
-					div += ' – ' + grades[i+1] +'</div> ';
-				}else{
-					div += '+' +'</div> ';
-				}
-				
-			}	
 			div+='</div>';
 			return div;
 		}

@@ -38,7 +38,7 @@
 			border: 1px solid gray;
 			display: table;
 			z-index: 50;
-			width: 900px;
+			width: 1020px;
 			height: 450px;
 			border-radius: 2px 2px 0px 0px;
 			margin: 0 auto;
@@ -99,7 +99,7 @@
 			border: 1px solid gray;
 			border-top: 0px;
 			display: block;
-			width: 900px;
+			width: 1020px;
 			border-radius: 0px 0px 2px 2px;
 			margin: 0 auto;
       position: relative;
@@ -111,6 +111,10 @@
       left: 330px;
     }
     
+    #legendAll{
+      position: absolute;
+      left: 905px;
+    }
 	</style>
 
 </head>
@@ -131,7 +135,7 @@
 		<div id="map-left" class="map"></div>
 		<div id="map-mid" class="map"></div>
 		<div id="map-right" class="map"></div>
-
+    <div id="legendAll"></div>
 	</div>
 	<div id="infobox">
 		<button type="button" onclick="showMap('left')">Left Map</button>
@@ -141,7 +145,6 @@
 		<p id="infotext">Hover over choropleth shapes to show more information.</p>
 	</div>
 	<p>&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors</p>
-	<div id="legendAll"><div>
 	<script>
 
 		// set up 3 maps
@@ -439,7 +442,7 @@
 		
 		// create the legend of the right and left map
 		createLegend = function (label) {
-			var div = '<div style="width:100px"><h4>'+label+'</h4>';
+			var div = '<div style="width:110px"><h4>'+label+'</h4>';
 			var	grades = [0, 10, 20, 50, 100, 200, 500, 1000];
 
 			
@@ -454,7 +457,7 @@
 		
 		// create the legend of the differences
 		createLegendDif = function (label) {
-			var div = '<div style="width:100px"><h4>'+label+'</h4>';
+			var div = '<div style="width:110px"><h4>'+label+'</h4>';
 			var	grades = [leftlowerhalf, leftmiddlequarter,0, rightmiddlequarter, rightupperhalf];
 				
 			div += '<div style="background:' + getColorDensity(leftlowerhalf-1) + ';"> < ' + leftlowerhalf+'</div>' ;
@@ -462,7 +465,7 @@
 			for (var i = 0; i < grades.length; i++) {
 				div += '<div style="background:' + getColorDensity(grades[i]) + ';">'+ grades[i];
 				if(i <grades.length-1){
-					div += ' - ' + grades[i+1] +'</div> ';
+					div += ' – ' + grades[i+1] +'</div> ';
 				}else{
 					div += '+' +'</div> ';
 				}

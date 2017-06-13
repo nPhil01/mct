@@ -12,27 +12,34 @@
 	<script src="./us_states.js"></script>
 	<script src="./us_states_2_variation.js"></script>
 	<style>
+		body {
+			font-family: Sans-Serif;
+		}
 
-    body{font-family: Sans-Serif;}
-  
 		.map {
 			height: 450px;
 			position: absolute;
 			top: 1px;
 			left: 1px;
 		}
+
 		#map-left {
-			width: 900px; /* Workaround, see GeoJSON & map data loading... */
+			width: 900px;
+			/* Workaround, see GeoJSON & map data loading... */
 			z-index: 30;
 		}
+
 		#map-mid {
-			width: 900px; /* Also part of the workaround. */
+			width: 900px;
+			/* Also part of the workaround. */
 			z-index: 20;
 		}
+
 		#map-right {
 			width: 900px;
 			z-index: 10;
 		}
+
 		#container {
 			position: relative;
 			border: 1px solid gray;
@@ -43,23 +50,29 @@
 			border-radius: 2px 2px 0px 0px;
 			margin: 0 auto;
 		}
-		h1, p{
+
+		h1,
+		p {
 			text-align: center;
 		}
-    
-    h1{margin: 10px;}
-    
-		#dragwrapper-left{
+
+		h1 {
+			margin: 10px;
+		}
+
+		#dragwrapper-left {
 			position: absolute;
 			left: 285px;
 			z-index: 80;
 		}
-		#dragwrapper-right{
+
+		#dragwrapper-right {
 			position: absolute;
 			left: 585px;
 			z-index: 80;
 		}
-		#drag-left{
+
+		#drag-left {
 			position: absolute;
 			width: 2px;
 			background: rgb(136, 136, 136) none repeat scroll;
@@ -67,7 +80,8 @@
 			left: 15px;
 			max-width: 2px;
 		}
-		#drag-right{
+
+		#drag-right {
 			position: absolute;
 			width: 2px;
 			background: rgb(136, 136, 136) none repeat scroll;
@@ -75,26 +89,30 @@
 			left: 15px;
 			max-width: 2px;
 		}
-		#draghandle-left{
+
+		#draghandle-left {
 			position: relative;
 			cursor: pointer;
 			z-index: 100;
 			left: -15px;
 		}
-		#draghandle-right{
+
+		#draghandle-right {
 			position: relative;
 			cursor: pointer;
 			z-index: 100;
 			left: -15px;
 			top: 426px;
 		}
-		#constraint{
+
+		#constraint {
 			position: absolute;
 			top: 1px;
 			left: 1px;
 			height: 100%;
-			width:870px;
+			width: 870px;
 		}
+
 		#infobox {
 			border: 1px solid gray;
 			border-top: 0px;
@@ -102,19 +120,20 @@
 			width: 1040px;
 			border-radius: 0px 0px 2px 2px;
 			margin: 0 auto;
-      position: relative;
+			position: relative;
 		}
 
-    #infotext{
-      position: absolute;
-      top: -15px;
-      left: 330px;
-    }
-    
-    #legendAll{
-      position: absolute;
-      left: 905px;
-    }
+		#infotext {
+			margin: 0;
+			margin-right: 5px;
+			float: right;
+			vertical-align: middle;
+		}
+
+		#legendAll {
+			position: absolute;
+			left: 905px;
+		}
 	</style>
 
 </head>
@@ -131,30 +150,49 @@
 		<div id="dragwrapper-right">
 			<div id="drag-right">
 				<img id="draghandle-right" src="./sliders.png">
-			</div></div>
+			</div>
+		</div>
 		<div id="map-left" class="map"></div>
 		<div id="map-mid" class="map"></div>
 		<div id="map-right" class="map"></div>
-    <div id="legendAll"></div>
+		<div id="legendAll"></div>
 	</div>
 	<div id="infobox">
-		<button type="button" onclick="showMap('left')">Left Map</button>
-		<button type="button" onclick="showMap('central')">Central Map</button>
-		<button type="button" onclick="showMap('right')">Right Map</button>
-		<button type="button" onclick="showMap('all')">All Maps</button>
+		<button type="button" class="togglebutton" onclick="showMap('left')">Left Map</button>
+		<button type="button" class="togglebutton" onclick="showMap('central')">Central Map</button>
+		<button type="button" class="togglebutton" onclick="showMap('right')">Right Map</button>
+		<button type="button" class="togglebutton" onclick="showMap('all')">All Maps</button>
 		<p id="infotext">Hover over choropleth shapes to show more information.</p>
 	</div>
+	<br>
 	<p>&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors</p>
 	<script>
-
 		// set up 3 maps
-		var leftmap = L.map('map-left', {center: [51.505, -0.09], zoom: 13, zoomAnimation: false, attributionControl: false, zoomControl: false});
-		var midmap = L.map('map-mid', {center: [51.505, -0.09], zoom: 13, zoomAnimation: false, attributionControl: false, zoomControl: false});
-		var rightmap = L.map('map-right', {center: [51.505, -0.09], zoom: 13, zoomAnimation: false, attributionControl: false, zoomControl: false});
-		
+		var leftmap = L.map('map-left', {
+			center: [51.505, -0.09],
+			zoom: 13,
+			zoomAnimation: false,
+			attributionControl: false,
+			zoomControl: false
+		});
+		var midmap = L.map('map-mid', {
+			center: [51.505, -0.09],
+			zoom: 13,
+			zoomAnimation: false,
+			attributionControl: false,
+			zoomControl: false
+		});
+		var rightmap = L.map('map-right', {
+			center: [51.505, -0.09],
+			zoom: 13,
+			zoomAnimation: false,
+			attributionControl: false,
+			zoomControl: false
+		});
+
 		var basemap = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
 		var basemap_options = {
-				maxZoom: 18
+			maxZoom: 18
 		};
 
 		L.tileLayer(basemap, basemap_options).addTo(leftmap);
@@ -165,11 +203,11 @@
 		var recursing = 0;
 
 		function getCenterDistance(a, b) {
-			return (b.getSize().x/2) - (a.getSize().x/2);
+			return (b.getSize().x / 2) - (a.getSize().x / 2);
 		}
 
 		function syncMaps(source, target) {
-			if(recursing > 3) {
+			if (recursing > 3) {
 				recursing = 0;
 				return;
 			}
@@ -183,51 +221,67 @@
 			let pixels = source.latLngToLayerPoint(center);
 			pixels.x += offset;
 
-			target.setView(source.layerPointToLatLng(pixels), source.getZoom(), { animate: false });
+			target.setView(source.layerPointToLatLng(pixels), source.getZoom(), {
+				animate: false
+			});
 		}
 
 		// register synchronization function
-		leftmap.on('move', function() {
+		leftmap.on('move', function () {
 			syncMaps(leftmap, rightmap);
 			syncMaps(leftmap, midmap);
 		});
 
-		midmap.on('move', function() {
+		midmap.on('move', function () {
 			syncMaps(midmap, leftmap);
 			syncMaps(midmap, rightmap);
 		});
 
-		rightmap.on('move', function() {
+		rightmap.on('move', function () {
 			syncMaps(rightmap, leftmap);
 			syncMaps(rightmap, midmap);
 		});
 
 		// create draggable handles
-		$('#dragwrapper-left').draggable({ containment:$('#constraint'),drag:$('#drag-left'),stop:$('#drag-left'), axis: "x" });
-		$('#dragwrapper-right').draggable({ containment:$('#constraint'),drag:$('#drag-right'),stop:$('#drag-right'), axis: "x"});
-		
-		$('#dragwrapper-left').on('drag', function() {
-			$('#map-left').width( $('#dragwrapper-left').position().left + 16);
+		$('#dragwrapper-left').draggable({
+			containment: $('#constraint'),
+			drag: $('#drag-left'),
+			stop: $('#drag-left'),
+			axis: "x"
+		});
+		$('#dragwrapper-right').draggable({
+			containment: $('#constraint'),
+			drag: $('#drag-right'),
+			stop: $('#drag-right'),
+			axis: "x"
 		});
 
-		$('#dragwrapper-right').on('drag', function() {
-			$('#map-mid').width( $('#dragwrapper-right').position().left + 16);
+		$('#dragwrapper-left').on('drag', function () {
+			$('#map-left').width($('#dragwrapper-left').position().left + 16);
+		});
+
+		$('#dragwrapper-right').on('drag', function () {
+			$('#map-mid').width($('#dragwrapper-right').position().left + 16);
 		});
 
 		// workaround for draggable bug
 		var workaround_yl = $('#dragwrapper-left').position().top + 1;
-		var workaround_yr = $('#dragwrapper-left').position().top + 1; 
+		var workaround_yr = $('#dragwrapper-left').position().top + 1;
 
-		$('#dragwrapper-left').on('dragstop', function() {
-			$("#dragwrapper-left").css({top: workaround_yl+'px'});
+		$('#dragwrapper-left').on('dragstop', function () {
+			$("#dragwrapper-left").css({
+				top: workaround_yl + 'px'
+			});
 		});
 
-		$('#dragwrapper-right').on('dragstop', function() {
-			$("#dragwrapper-right").css({top: workaround_yr+'px'});
+		$('#dragwrapper-right').on('dragstop', function () {
+			$("#dragwrapper-right").css({
+				top: workaround_yr + 'px'
+			});
 		});
 
 		// make sure both datasets have the same size
-		if(statesData.features.size != statesData2.features.size) {
+		if (statesData.features.size != statesData2.features.size) {
 			alert("Error: datasets can't be compared");
 			exit;
 		}
@@ -235,12 +289,12 @@
 		// the functions from the tutorial to color and style the maps
 		function getColor(d) {
 			return d > 1000 ? '#800026' :
-				d > 500  ? '#BD0026' :
-				d > 200  ? '#E31A1C' :
-				d > 100  ? '#FC4E2A' :
-				d > 50   ? '#FD8D3C' :
-				d > 20   ? '#FEB24C' :
-				d > 10   ? '#FED976' :
+				d > 500 ? '#BD0026' :
+				d > 200 ? '#E31A1C' :
+				d > 100 ? '#FC4E2A' :
+				d > 50 ? '#FD8D3C' :
+				d > 20 ? '#FEB24C' :
+				d > 10 ? '#FED976' :
 				'#FFEDA0';
 		}
 
@@ -260,13 +314,13 @@
 		}
 
 		function setInfo(properties) {
-			if(properties.density === undefined) { // in this case it's midmap
+			if (properties.density === undefined) { // in this case it's midmap
 				$('#infotext')[0].innerHTML = properties.name + ": " + properties.density_left + " → " +
-				properties.density_right + " (" + (properties.density_diff < 0 ? properties.density_diff : ("+" + properties.density_diff)) + ")";
-			}
-			else { // otherwise it's right or left
+					properties.density_right + " (" + (properties.density_diff < 0 ? properties.density_diff : ("+" + properties.density_diff)) +
+					")";
+			} else { // otherwise it's right or left
 				$('#infotext')[0].innerHTML = properties.name + ": " + properties.density;
-			} 
+			}
 		}
 
 		function highlightFeature(e) {
@@ -291,11 +345,12 @@
 			geojson_right.resetStyle(e.target);
 			resetInfo();
 		}
+
 		function resetHighlightL(e) {
 			geojson_left.resetStyle(e.target);
 			resetInfo();
 		}
-		
+
 		function onEachFeatureR(feature, layer) {
 			layer.on({
 				mouseover: highlightFeature,
@@ -309,7 +364,7 @@
 				mouseout: resetHighlightL
 			});
 		}
-		
+
 
 		// load data into the maps
 		var geojson_left = L.geoJson(statesData, {
@@ -320,7 +375,7 @@
 			style: style,
 			onEachFeature: onEachFeatureR
 		}).addTo(rightmap);
-				
+
 		function showMap(whichMap) {
 			switch (whichMap) {
 				case "left":
@@ -343,17 +398,17 @@
 					document.getElementById("dragwrapper-right").style.left = "585px";
 					updateSlider();
 			}
-	}
-	
+		}
+
 		function updateSlider() {
-		$('#map-left').width( $('#dragwrapper-left').position().left + 16);
-		$('#map-mid').width( $('#dragwrapper-right').position().left + 16);
+			$('#map-left').width($('#dragwrapper-left').position().left + 16);
+			$('#map-mid').width($('#dragwrapper-right').position().left + 16);
 		}
 
 		// creating the difference map + color scale
 		var diffData = {
-			"type" : "FeatureCollection",
-			"features" : []
+			"type": "FeatureCollection",
+			"features": []
 		};
 		var colormin = 0;
 		var colormax = 0;
@@ -439,43 +494,46 @@
 		rightmap.setView([37.8, -96], 4);
 		syncMaps(rightmap, leftmap);
 		syncMaps(rightmap, midmap);
-		
+
 		// create the legend of the right and left map
 		createLegend = function (label) {
-			var div = '<div style="width:130px"><h4>'+label+'</h4>';
-			var	grades = [0, 10, 20, 50, 100, 200, 500, 1000];
+			var div = '<div style="width:130px"><h4>' + label + '</h4>';
+			var grades = [0, 10, 20, 50, 100, 200, 500, 1000];
 
-			
+
 			for (var i = 0; i < grades.length; i++) {
-				div += '<div style="background:' + getColor(grades[i]+1) + ';">' +
-					grades[i] + (grades[i+1] ? '&ndash;' + grades[i+1] + '</div>' : '+</div>');
+				div += '<div style="background:' + getColor(grades[i] + 1) + ';">' +
+					grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '</div>' : '+</div>');
 			}
-			
-			div+='</div>';
+
+			div += '</div>';
 			return div;
 		};
-		
+
 		// create the legend of the differences
 		createLegendDif = function (label) {
-			var div = '<div style="width:130px"><h4>'+label+'</h4>';
-			var	grades = [leftlowerhalf, leftmiddlequarter,0, rightmiddlequarter, rightupperhalf];
+			var div = '<div style="width:130px"><h4>' + label + '</h4>';
+			var grades = [leftlowerhalf, leftmiddlequarter, 0, rightmiddlequarter, rightupperhalf];
 
-			div += '<div style="background:' + getColorDensity(leftlowerhalf-1) + ';"> &lt; ' + leftlowerhalf+'</div>' ;
-      div += '<div style="background:' + getColorDensity( leftlowerhalf) + ';">' + leftlowerhalf + ' &ndash; &lt; ' + leftmiddlequarter + '</div>' ;
-      div += '<div style="background:' + getColorDensity( leftmiddlequarter) + ';">' + leftmiddlequarter + ' &ndash; &lt; 0</div>' ;
-			div += '<div style="background:' + getColorDensity(0) + ';">0</div>' ;
-      div += '<div style="background:' + getColorDensity( rightmiddlequarter) + ';">&gt; 0 &ndash; ' + rightmiddlequarter + '</div>' ;
-      div += '<div style="background:' + getColorDensity( rightupperhalf) + ';">&gt; ' + rightmiddlequarter + ' &ndash; ' + rightupperhalf + '</div>' ;
-			div += '<div style="background:' + getColorDensity(rightupperhalf+1) + ';"> &gt; ' + rightupperhalf+'</div>' ;
-			
-			div+='</div>';
+			div += '<div style="background:' + getColorDensity(leftlowerhalf - 1) + ';"> &lt; ' + leftlowerhalf + '</div>';
+			div += '<div style="background:' + getColorDensity(leftlowerhalf) + ';">' + leftlowerhalf + ' &ndash; &lt; ' +
+				leftmiddlequarter + '</div>';
+			div += '<div style="background:' + getColorDensity(leftmiddlequarter) + ';">' + leftmiddlequarter +
+				' &ndash; &lt; 0</div>';
+			div += '<div style="background:' + getColorDensity(0) + ';">0</div>';
+			div += '<div style="background:' + getColorDensity(rightmiddlequarter) + ';">&gt; 0 &ndash; ' + rightmiddlequarter +
+				'</div>';
+			div += '<div style="background:' + getColorDensity(rightupperhalf) + ';">&gt; ' + rightmiddlequarter + ' &ndash; ' +
+				rightupperhalf + '</div>';
+			div += '<div style="background:' + getColorDensity(rightupperhalf + 1) + ';"> &gt; ' + rightupperhalf + '</div>';
+
+			div += '</div>';
 			return div;
 		}
-			
+
 		outerLegend = createLegend('Outer Maps');
 		midLegend = createLegendDif('Middle Map');
-		document.getElementById('legendAll').innerHTML = outerLegend+midLegend;
-		
+		document.getElementById('legendAll').innerHTML = outerLegend + midLegend;
 	</script>
 </body>
 

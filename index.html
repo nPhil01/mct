@@ -29,10 +29,19 @@
 	<div>
 		<div id="map"></div>
 	</div>
+	<p>Compare map <span id="from_map">1</span> with map <span id="to_map">2</span>. <input id="compare_maps_slider" type="range" min="1" max="4" value="1" onmousemove="update_label(value)"/></p>
 	<script>
+
+		// update the slider labels
+		function update_label(value) {
+			document.getElementById("from_map").innerHTML = value;
+			document.getElementById("to_map").innerHTML = Number(value) + 1;
+		}
+
+		// setting up the map
 		var map = L.map('map', {
-			center: [51.505, -0.09],
-			zoom: 13
+			center: [37.8, -96],
+			zoom: 4
 		});
 
 		var settings = {

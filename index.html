@@ -29,15 +29,9 @@
 	<div>
 		<div id="map"></div>
 	</div>
-	<p>Compare map <span id="from_map">1</span> with map <span id="to_map">2</span>. <input id="compare_maps_slider" type="range" min="1" max="4" value="1" onmousemove="update_label(value)"/></p>
+	<p>Compare map <span id="from_map">1</span> with map <span id="to_map">2</span>. <input id="compare_maps_slider" type="range"
+		    min="1" max="4" value="1" onmousemove="update_label(value)" onchange="update_map(value)" /></p>
 	<script>
-
-		// update the slider labels
-		function update_label(value) {
-			document.getElementById("from_map").innerHTML = value;
-			document.getElementById("to_map").innerHTML = Number(value) + 1;
-		}
-
 		// setting up the map
 		var map = L.map('map', {
 			center: [37.8, -96],
@@ -53,6 +47,85 @@
 		};
 
 		L.tileLayer(settings.basemap_url, settings.basemap_options).addTo(map);
+
+		var data_list = [data1, data2, data3, data4, data5];
+
+
+		// functions to render choropleth map
+		function getColor(r, d) {
+			if (d == 0) {
+				return r > 1000 ? '#CFCFCF' :
+					r > 500 ? '#AFAFAF' :
+					r > 200 ? '#9F9F9F' :
+					r > 100 ? '#7F7F7F' :
+					r > 50 ? '#5F5F5F' :
+					r > 20 ? '#3F3F3F' :
+					r > 10 ? '#1F1F1F' :
+					'#000000';
+			}
+			else if(d > 0) {
+				return '#00ff00';
+			}
+			else {
+				return '#ff0000';
+			}
+		}
+
+		function style(feature) {
+			return {
+				weight: 2,
+				opacity: 1,
+				color: 'white',
+				dashArray: '3',
+				fillOpacity: 1,
+				fillColor: getColor(feature.properties.density_right, feature.properties.density_diff)
+			};
+		}
+
+		var shapes_geojson = {};
+
+		function show_values(data_a, data_b) {
+
+			let data_new = {
+				"type": "FeatureCollection",
+				"features": []
+			};
+
+			for (let dataset = 0; dataset < data_a.features.length; dataset++) {
+				let ldata = data_a.features[dataset];
+				let rdata = data_b.features[dataset];
+
+				let newdata = {
+					type: "Feature",
+					id: "" + (dataset + 1) + "",
+					properties: {
+						name: ldata.properties.name,
+						density_diff: rdata.properties.density - ldata.properties.density,
+						density_left: ldata.properties.density,
+						density_right: rdata.properties.density
+					},
+					geometry: ldata.geometry
+				};
+				data_new.features.push(newdata);
+			}
+
+			shapes_geojson = L.geoJson(data_new, {
+				style: style
+			}).addTo(map);
+		}
+
+		// render choropleth map
+		show_values(data1, data2);
+
+		// update the slider labels & map
+		function update_label(value) {
+			document.getElementById("from_map").innerHTML = value;
+			document.getElementById("to_map").innerHTML = Number(value) + 1;
+		}
+
+		function update_map(value) {
+			show_values(data_list[Number(value) - 1], data_list[Number(value)]);
+		}
 	</script>
 </body>
 

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Timelapse</title>
+
+	<link rel="stylesheet" href="./leaflet/leaflet.css" />
+	<script src="./leaflet/leaflet.js"></script>
+	<style>
+		#map {
+			height: 350px;
+			border-radius: 2px;
+			border-style: solid;
+			border-width: 1px;
+			width: 50%;
+		}
+	</style>
+
+</head>
+
+<body>
+	<h1>Timelapse</h1>
+	<div>
+		<div id="map"></div>
+	</div>
+	<script>
+		var map = L.map('map', {
+			center: [51.505, -0.09],
+			zoom: 13
+		});
+
+		var settings = {
+			basemap_url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+			basemap_options: {
+				maxZoom: 18,
+				attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+			}
+		};
+
+		L.tileLayer(settings.basemap_url, settings.basemap_options).addTo(map);
+	</script>
+</body>
+
+</html>

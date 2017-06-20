@@ -137,8 +137,9 @@
 			left: 905px;
 		}
 		/* Workaround for hiding the legend. */
-		.leaflet-control-attribution{
-		  display: none;
+
+		.leaflet-control-attribution {
+			display: none;
 		}
 	</style>
 
@@ -266,10 +267,31 @@
 
 		$('#dragwrapper-left').on('drag', function () {
 			$('#map-left').width($('#dragwrapper-left').position().left + 16);
+
+			// make sure the left wrapper doesn't overlap the right one
+			if ($('#dragwrapper-left').position().left + 16 > $('#dragwrapper-right').position().left) {
+				
+				$("#dragwrapper-right").css({
+					left: ($('#dragwrapper-left').position().left + 16) + 'px'
+				});
+
+				$('#map-mid').width($('#dragwrapper-right').position().left + 16);
+			}
 		});
 
 		$('#dragwrapper-right').on('drag', function () {
 			$('#map-mid').width($('#dragwrapper-right').position().left + 16);
+
+			// make sure the right wrapper doesn't overlap the left one
+			if ($('#dragwrapper-right').position().left < $('#dragwrapper-left').position().left + 16) {
+				
+				$("#dragwrapper-left").css({
+					left: ($('#dragwrapper-right').position().left - 16) + 'px'
+				});
+
+				$('#map-left').width($('#dragwrapper-left').position().left + 16);
+			}
+
 		});
 
 		// workaround for draggable bug
@@ -384,45 +406,47 @@
 			onEachFeature: onEachFeatureR
 		}).addTo(rightmap);
 
-        var searchControl = new L.Control.Search({
-            layer: geojson_left,
-            propertyName: 'name',
-            marker: false,
-            moveToLocation: function(latlng, title, leftmap) {
-                //map.fitBounds( latlng.layer.getBounds() );
-                var zoom = leftmap.getBoundsZoom(latlng.layer.getBounds());
-                leftmap.setView(latlng, zoom); // access the zoom
-            }
-        });
+		var searchControl = new L.Control.Search({
+			layer: geojson_left,
+			propertyName: 'name',
+			marker: false,
+			moveToLocation: function (latlng, title, leftmap) {
+				//map.fitBounds( latlng.layer.getBounds() );
+				var zoom = leftmap.getBoundsZoom(latlng.layer.getBounds());
+				leftmap.setView(latlng, zoom); // access the zoom
+			}
+		});
 
-        searchControl.on('search:locationfound', function(e) {
+		searchControl.on('search:locationfound', function (e) {
 
-            e.layer.setStyle({fillColor: '#3f0', color: '#0f0'});
-            if(e.layer._popup)
-                e.layer.openPopup();
+			e.layer.setStyle({
+				fillColor: '#3f0',
+				color: '#0f0'
+			});
+			if (e.layer._popup)
+				e.layer.openPopup();
 
-        }).on('search:collapsed', function(e) {
+		}).on('search:collapsed', function (e) {
 
-            geojson_left.eachLayer(function(layer) {	//restore feature color
-                geojson_left.resetStyle(layer);
-            });
-        });
+			geojson_left.eachLayer(function (layer) { //restore feature color
+				geojson_left.resetStyle(layer);
+			});
+		});
 
-        searchControl.on('search:collapsed', function(e) {
-            leftmap.setView([37.8, -96], 4);
-        });
+		searchControl.on('search:collapsed', function (e) {
+			leftmap.setView([37.8, -96], 4);
+		});
 
-        leftmap.addControl( searchControl );  //initialise search control
+		leftmap.addControl(searchControl); //initialise search control
 
-        var htmlObject = searchControl.getContainer();
+		var htmlObject = searchControl.getContainer();
 
-        var a = document.getElementById('search');
+		var a = document.getElementById('search');
 
-        function setParent(el, newParent)
-        {
-            newParent.appendChild(el);
-        }
-        setParent(htmlObject, a);
+		function setParent(el, newParent) {
+			newParent.appendChild(el);
+		}
+		setParent(htmlObject, a);
 
 		function showMap(whichMap) {
 			switch (whichMap) {

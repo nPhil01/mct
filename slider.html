@@ -53,6 +53,27 @@
 			margin: 0 auto;
 		}
 
+		#labels {
+			position: relative;
+			left: 0px;
+			z-index: 10;
+		}
+
+		#labelComparison {
+			position: absolute;
+			left: 625px;
+		}
+
+		#labelBefore {
+			position: absolute;
+			left: 300px;
+		}
+
+		#labelAfter {
+			position: absolute;
+			left: 900px;
+		}
+
 		h1,
 		p {
 			text-align: center;
@@ -146,7 +167,12 @@
 </head>
 
 <body>
-	<h1>Comparison Slider</h1>
+	<h1>Comparison Slider</h1><br>
+	<div id="labels">
+	<h4 id="labelBefore">Map Before: US-States</h4>
+	<h4 id="labelComparison">Comparison Map</h4>
+	<h4 id="labelAfter">Map After: US-States</h4>
+	</div><br><br>
 	<div id="container">
 		<div id="constraint"></div>
 		<div id="dragwrapper-left">

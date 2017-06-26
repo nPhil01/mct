@@ -593,20 +593,71 @@
 		syncMaps(rightmap, leftmap);
 		syncMaps(rightmap, midmap);
 
-		// create the legend of the right and left map
-		createLegend = function (label) {
-			var div = '<div style="width:130px"><h4>' + label + '</h4>';
-			var grades = [0, 10, 20, 50, 100, 200, 500, 1000];
+        // create the legend of the right and left map
+        createLegend = function (label) {
+            var div = '<div style="width:130px"><h4>' + label + '</h4>';
+            var grades = [0, 10, 20, 50, 100, 200, 500, 1000];
 
 
-			for (var i = 0; i < grades.length; i++) {
-				div += '<div style="background:' + getColor(grades[i] + 1) + ';">' +
+            for (var i = 0; i < grades.length; i++) {
+                div += '<div class="grade' + grades[i] + '" ' +
+					'onmouseover="areahighlight(' + grades[i] + ',' + grades[i + 1] + ');" ' +
+					'onmouseout="areahighlightstop(' + grades[i] + ',' + grades[i + 1] + ')" ' +
+					'style="background:' + getColor(grades[i] + 1) + ';">' +
 					grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '</div>' : '+</div>');
-			}
+            }
 
-			div += '</div>';
-			return div;
-		};
+            div += '</div>';
+            return div;
+        };
+
+        //Highlighting the areas with hovering the legend
+        areahighlight = function(grade1, grade2){
+            for (var i = 0; i < Object.values(geojson_left._layers).length; i++){
+                if(Object.values(geojson_left._layers)[i].feature.properties.density > grade1 && Object.values(geojson_left._layers)[i].feature.properties.density < grade2){
+                    var letid = Object.values(geojson_left._layers)[i]._leaflet_id;
+                    geojson_left._layers[letid].setStyle({
+                        weight: 3,
+                        color: '#55DDFF',
+                        dashArray: '',
+                        fillOpacity: 1
+                    });
+                    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                        geojson_left._layers[letid].bringToFront();
+                    }
+                }
+            }
+            for (var i = 0; i < Object.values(geojson_right._layers).length; i++){
+                if(Object.values(geojson_right._layers)[i].feature.properties.density > grade1 && Object.values(geojson_right._layers)[i].feature.properties.density < grade2){
+                    var letid = Object.values(geojson_right._layers)[i]._leaflet_id;
+                    geojson_right._layers[letid].setStyle({
+                        weight: 3,
+                        color: '#55DDFF',
+                        dashArray: '',
+                        fillOpacity: 1
+                    });
+                    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                        geojson_right._layers[letid].bringToFront();
+                    }
+                }
+            }
+        }
+
+        //Stop highlighting the areas when leaving the part of the legend
+        areahighlightstop = function(grade1, grade2){
+            for (var i = 0; i < Object.values(geojson_left._layers).length; i++){
+                if(Object.values(geojson_left._layers)[i].feature.properties.density > grade1 && Object.values(geojson_left._layers)[i].feature.properties.density < grade2){
+                    var letid = Object.values(geojson_left._layers)[i]._leaflet_id;
+                    geojson_left.resetStyle(geojson_left._layers[letid]);
+                }
+            }
+            for (var i = 0; i < Object.values(geojson_right._layers).length; i++){
+                if(Object.values(geojson_right._layers)[i].feature.properties.density > grade1 && Object.values(geojson_right._layers)[i].feature.properties.density < grade2){
+                    var letid = Object.values(geojson_right._layers)[i]._leaflet_id;
+                    geojson_right.resetStyle(geojson_right._layers[letid]);
+                }
+            }
+		}
 
 		// create the legend of the differences
 		createLegendDif = function (label) {

@@ -43,6 +43,7 @@
 		}
 
 		#container {
+			overflow: hidden;
 			position: relative;
 			border: 1px solid gray;
 			display: table;
@@ -59,19 +60,48 @@
 			z-index: 10;
 		}
 
+		.mapLabels {
+			text-align: center;
+		}
+
 		#labelComparison {
-			position: absolute;
-			left: 625px;
+			z-index: 25;
 		}
 
 		#labelBefore {
-			position: absolute;
-			left: 300px;
+			z-index: 35;
 		}
 
 		#labelAfter {
+			z-index: 15;
+		}
+
+		.overflowContainer {
+			overflow: hidden;
+		}
+
+		#ocLeft {
 			position: absolute;
-			left: 900px;
+			top: -20px;
+			left: 0px;
+			z-index: 35;
+			width: 300px;
+		}
+
+		#ocComparison {
+			z-index: 25;
+			position: absolute;
+			top: -20px;
+			left: 300px;
+			width: 300px;
+		}
+
+		#ocRight {
+			z-index: 15;
+			position: absolute;
+			top: -20px;
+			left: 600px;
+			width: 300px;
 		}
 
 		h1,
@@ -171,12 +201,16 @@
 </head>
 
 <body>
-	<div id="labels">
-		<h4 id="labelBefore">Map Before: US-States</h4>
-		<h4 id="labelComparison">Comparison Map</h4>
-		<h4 id="labelAfter">Map After: US-States</h4>
-	</div><br><br>
 	<div id="container">
+		<div class="overflowContainer" id="ocLeft">
+			<h5 class="mapLabels" id="labelBefore">Map Before: US-States</h5>
+		</div>
+		<div class="overflowContainer" id="ocComparison">
+			<h5 class="mapLabels" id="labelComparison">Comparison Map</h5>
+		</div>
+		<div class="overflowContainer" id="ocRight">
+			<h5 class="mapLabels" id="labelAfter">Map After: US-States</h5>
+		</div>
 		<div id="constraint"></div>
 		<div id="dragwrapper-left">
 			<div id="drag-left">
@@ -298,6 +332,26 @@
 			axis: "x"
 		});
 
+		function moveLeftLabels() {
+			$("#ocComparison").css({
+				left: ($('#dragwrapper-left').position().left) + 'px'
+			});
+			$('#ocComparison').width($('#dragwrapper-right').position().left - $('#dragwrapper-left').position().left);
+			$('#ocLeft').width($('#dragwrapper-left').position().left);
+		}
+
+		function moveRightLabels() {
+			$("#ocComparison").css({
+				left: ($('#dragwrapper-left').position().left) + 'px'
+			});
+			$('#ocComparison').width($('#dragwrapper-right').position().left - $('#dragwrapper-left').position().left);
+			$("#ocRight").css({
+				left: ($('#dragwrapper-right').position().left) + 'px'
+			});
+			$('#ocRight').width(900 - $('#dragwrapper-right').position().left);
+		}
+
+
 		$('#dragwrapper-left').on('drag', function () {
 			$('#map-left').width($('#dragwrapper-left').position().left + 16);
 
@@ -309,7 +363,9 @@
 				});
 
 				$('#map-mid').width($('#dragwrapper-right').position().left + 16);
+				moveRightLabels();
 			}
+			moveLeftLabels();
 		});
 
 		$('#dragwrapper-right').on('drag', function () {
@@ -323,8 +379,10 @@
 				});
 
 				$('#map-left').width($('#dragwrapper-left').position().left + 16);
-			}
 
+				moveLeftLabels();
+			}
+			moveRightLabels()
 		});
 
 		// workaround for draggable bug

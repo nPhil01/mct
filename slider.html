@@ -83,6 +83,10 @@
 			margin: 10px;
 		}
 
+		h4 {
+			margin-bottom: 10px;
+		}
+
 		#dragwrapper-left {
 			position: absolute;
 			left: 285px;
@@ -167,7 +171,6 @@
 </head>
 
 <body>
-	<h1>Comparison Slider</h1><br>
 	<div id="labels">
 		<h4 id="labelBefore">Map Before: US-States</h4>
 		<h4 id="labelComparison">Comparison Map</h4>
@@ -197,7 +200,7 @@
 		<button type="button" class="togglebutton" onclick="showMap('central')">Central Map</button>
 		<button type="button" class="togglebutton" onclick="showMap('right')">Right Map</button>
 		<button type="button" class="togglebutton" onclick="showMap('all')">All Maps</button>
-		<div> <input id="numberColorDif" type="number" min="3" max="9" step="2" value="7"><button type="button" onclick="selectNumberDifFunc()">Select</button></div>
+		<div><label>Colour range:</label> <input id="numberColorDif" style="width: 40px;" type="number" min="3" max="9" step="2" value="7" onchange="selectNumberDifFunc()"></div>
 		<p id="infotext">Hover over choropleth shapes to show more information.</p><br><br>
 	</div>
 	<br>

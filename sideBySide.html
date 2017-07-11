@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Side-by-Side</title>
+
+	<link rel="stylesheet" href="./leaflet/leaflet.css" />
+	<link rel="stylesheet" href="./leaflet-search.min.css" />
+	<script src="./leaflet/leaflet.js"></script>
+	<script src="./jquery.min.js"></script>
+	<script src="./jquery-ui.min.js"></script>
+	<script src="./leaflet-search.min.js"></script>
+	<script src="./us_states.js"></script>
+	<script src="./us_states_2_variation.js"></script>
+	<style>
+		body {
+			font-family: Sans-Serif;
+		}
+
+		#map-left {
+			width: 900px;
+			height: 450px;
+		}
+
+		#map-right {
+			width: 900px;
+			height: 450px;
+		}
+	</style>
+
+</head>
+
+<body>
+	<div id="container">
+		<h2>Before Map</h2>
+		<div id="map-left"></div>
+		<div id="infobox">
+			<p id="infotext">Hover over choropleth shapes to show more information.</p>
+		</div>
+		<h2>After Map</h2>
+		<div id="map-right"></div>
+		<div id="legendAll"></div>
+	</div>
+	
+	<br>
+	<p>&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors</p><br>
+	<script>
+		
+		var leftmap = L.map('map-left', {
+			center: [37.8, -96],
+			zoom: 4,
+			zoomAnimation: false,
+			attributionControl: true,
+			zoomControl: false
+		});
+		var rightmap = L.map('map-right', {
+			center: [37.8, -96],
+			zoom: 4,
+			zoomAnimation: false,
+			attributionControl: false,
+			zoomControl: false
+		});
+
+		var basemap = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
+		var basemap_options = {
+			maxZoom: 18
+		};
+
+		L.tileLayer(basemap, basemap_options).addTo(leftmap);
+		L.tileLayer(basemap, basemap_options).addTo(rightmap);
+	
+		// the functions from the tutorial to color and style the maps
+		function getColor(d) {
+			return d > 1000 ? '#084594': 	//'#800026' :
+				d > 500 ? '#2171b5': 		//'#BD0026' :
+				d > 200 ? '#4292c6':		//'#E31A1C':
+				d > 100 ? '#6baed6':		//'#FC4E2A' :
+				d > 50 ? '#9ecae1':			//'#FD8D3C':
+				d > 20 ? '#c6dbef':			//'#FEB24C':
+				d > 10 ? '#deebf7':			//'#FED976':
+				'#f7fbff';					//'#FFEDA0';
+		}
+
+		function style(feature) {
+			return {
+				weight: 2,
+				opacity: 1,
+				color: 'white',
+				dashArray: '3',
+				fillOpacity: 1,
+				fillColor: getColor(feature.properties.density)
+			};
+		}
+		
+		function resetInfo() {
+			$('#infotext')[0].innerHTML = "Hover over choropleth shapes to show more information.";
+		}
+
+		function setInfo(properties) {
+				$('#infotext')[0].innerHTML = properties.name + ": " + properties.density;
+		}
+		
+		function highlightFeature(e) {
+			var layer = e.target;
+
+			layer.setStyle({
+				weight: 3,
+				color: '#55DDFF',
+				dashArray: '',
+				fillOpacity: 1
+			});
+
+			if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+				layer.bringToFront();
+			}
+
+			setInfo(layer.feature.properties);
+
+		}
+
+		function resetHighlightR(e) {
+			geojson_right.resetStyle(e.target);
+			resetInfo();
+		}
+
+		function resetHighlightL(e) {
+			geojson_left.resetStyle(e.target);
+			resetInfo();
+		}
+
+		function onEachFeatureR(feature, layer) {
+			layer.on({
+				mouseover: highlightFeature,
+				mouseout: resetHighlightR
+			});
+		}
+
+		function onEachFeatureL(feature, layer) {
+			layer.on({
+				mouseover: highlightFeature,
+				mouseout: resetHighlightL
+			});
+		}
+
+
+		// load data into the maps
+		var geojson_left = L.geoJson(statesData, {
+			style: style,
+			onEachFeature: onEachFeatureL
+		}).addTo(leftmap);
+
+		var geojson_right = L.geoJson(statesData2, {
+			style: style,
+			onEachFeature: onEachFeatureR
+		}).addTo(rightmap);
+
+
+		createLegend = function (label) {
+			var div = '<div style="width:130px"><h4>' + label + '</h4>';
+			var grades = [0, 10, 20, 50, 100, 200, 500, 1000];
+
+
+			for (var i = 0; i < grades.length; i++) {
+				div += '<div style="background:' + getColor(grades[i] + 1) + ';">' +
+					grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '</div>' : '+</div>');
+			}
+
+			div += '</div>';
+			return div;
+		};
+
+		
+		document.getElementById('legendAll').innerHTML = createLegend('Legend');
+
+	</script>
+</body>
+
+</html>

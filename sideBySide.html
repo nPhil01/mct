@@ -88,7 +88,6 @@
 	<br>
 	<div id="infobox">
 		<p id="infotext">Hover over choropleth shapes to show more information.</p>
-		<p>&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors</p>
 	</div>
 
 	<br>
@@ -110,7 +109,9 @@
 
 		var basemap = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
 		var basemap_options = {
-			maxZoom: 18
+			maxZoom: 18,
+			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
+
 		};
 
 		L.tileLayer(basemap, basemap_options).addTo(leftmap);

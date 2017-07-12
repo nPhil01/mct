@@ -117,13 +117,13 @@
 
 		#dragwrapper-left {
 			position: absolute;
-			left: 285px;
+			left: 268px;
 			z-index: 80;
 		}
 
 		#dragwrapper-right {
 			position: absolute;
-			left: 585px;
+			left: 568px;
 			z-index: 80;
 		}
 
@@ -132,7 +132,7 @@
 			width: 2px;
 			background: rgb(136, 136, 136) none repeat scroll;
 			height: 450px;
-			left: 15px;
+			left: 31px;
 			max-width: 2px;
 		}
 
@@ -141,23 +141,24 @@
 			width: 2px;
 			background: rgb(136, 136, 136) none repeat scroll;
 			height: 450px;
-			left: 15px;
+			left: 31px;
 			max-width: 2px;
 		}
 
 		#draghandle-left {
 			position: relative;
 			cursor: pointer;
-			z-index: 100;
-			left: -15px;
+			z-index: 1000;
+			left: -31px;
+			top: -1px;
 		}
 
 		#draghandle-right {
 			position: relative;
 			cursor: pointer;
-			z-index: 100;
-			left: -15px;
-			top: 426px;
+			z-index: 1000;
+			left: -31px;
+			top: 403px;
 		}
 
 		#constraint {
@@ -165,7 +166,7 @@
 			top: 1px;
 			left: 1px;
 			height: 100%;
-			width: 870px;
+			width: 838px;
 		}
 
 		#infobox {
@@ -201,13 +202,13 @@
 <body>
 	<div id="container">
 		<div class="overflowContainer" id="ocLeft">
-			<h5 class="mapLabels" id="labelBefore">Map Before: US-States</h5>
+			<h5 class="mapLabels" id="labelBefore">Map Before</h5>
 		</div>
 		<div class="overflowContainer" id="ocComparison">
 			<h5 class="mapLabels" id="labelComparison">Comparison Map</h5>
 		</div>
 		<div class="overflowContainer" id="ocRight">
-			<h5 class="mapLabels" id="labelAfter">Map After: US-States</h5>
+			<h5 class="mapLabels" id="labelAfter">Map After</h5>
 		</div>
 		<div id="constraint"></div>
 		<div id="dragwrapper-left">
@@ -348,34 +349,34 @@
 			$('#ocRight').width(900 - $('#dragwrapper-right').position().left);
 		}
 
-
+		var handleWidth = 32;
 		$('#dragwrapper-left').on('drag', function () {
-			$('#map-left').width($('#dragwrapper-left').position().left + 16);
+			$('#map-left').width($('#dragwrapper-left').position().left + handleWidth);
 
 			// make sure the left wrapper doesn't overlap the right one
-			if ($('#dragwrapper-left').position().left + 16 > $('#dragwrapper-right').position().left) {
+			if ($('#dragwrapper-left').position().left > $('#dragwrapper-right').position().left) {
 
 				$("#dragwrapper-right").css({
-					left: ($('#dragwrapper-left').position().left + 16) + 'px'
+					left: ($('#dragwrapper-left').position().left) + 'px'
 				});
 
-				$('#map-mid').width($('#dragwrapper-right').position().left + 16);
+				$('#map-mid').width($('#dragwrapper-right').position().left + handleWidth);
 				moveRightLabels();
 			}
 			moveLeftLabels();
 		});
 
 		$('#dragwrapper-right').on('drag', function () {
-			$('#map-mid').width($('#dragwrapper-right').position().left + 16);
+			$('#map-mid').width($('#dragwrapper-right').position().left + handleWidth);
 
 			// make sure the right wrapper doesn't overlap the left one
-			if ($('#dragwrapper-right').position().left < $('#dragwrapper-left').position().left + 16) {
+			if ($('#dragwrapper-right').position().left < $('#dragwrapper-left').position().left) {
 
 				$("#dragwrapper-left").css({
-					left: ($('#dragwrapper-right').position().left - 16) + 'px'
+					left: ($('#dragwrapper-right').position().left) + 'px'
 				});
 
-				$('#map-left').width($('#dragwrapper-left').position().left + 16);
+				$('#map-left').width($('#dragwrapper-left').position().left + handleWidth);
 
 				moveLeftLabels();
 			}

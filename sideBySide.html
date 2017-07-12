@@ -451,6 +451,29 @@
 		document.getElementById('legendAll-compare').innerHTML = createLegendDif("Legend", getNewGrades())
 		document.getElementById('legendAll-before').innerHTML = createLegend('Legend');
 		document.getElementById('legendAll-after').innerHTML = createLegend('Legend');
+
+		// stopwatch
+		var stopwatch_running = false;
+		var stopwatch_starttime = (new Date()).getTime();
+		var stopwatch_interval;
+
+		function start_stopwatch() {
+			if (!stopwatch_running) {
+				stopwatch_running = true;
+				stopwatch_starttime = new Date().getTime();
+				stopwatch_interval = setInterval(function () {
+					let passed_time = (new Date().getTime() - stopwatch_starttime) / 1000;
+					document.getElementById("controltime").innerHTML = passed_time + " s";
+				}, 30);
+			}
+		}
+
+		function stop_stopwatch() {
+			if (stopwatch_running) {
+				stopwatch_running = false;
+				clearInterval(stopwatch_interval);
+			}
+		}
 	</script>
 </body>
 

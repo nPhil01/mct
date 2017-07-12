@@ -200,7 +200,6 @@
 			border-radius: 0px 0px 2px 2px;
 			margin-left: 30px;
 			position: relative;
-
 		}
 
 		#infotext {
@@ -262,14 +261,15 @@
 	</div>
 	<div id="infobox">
 		<div style=" padding: 5px;">
-		<div style="float: left;"><label>Colour range:</label> <input id="numberColorDif" style="width: 40px;" type="number" min="3" max="9" step="2" value="7"
-			    onchange="selectNumberDifFunc()"></div>
-		<div style="float: left;">
-			<button type="button" class="togglebutton" onclick="showMap('left')">Left Map</button>
-			<button type="button" class="togglebutton" onclick="showMap('central')">Central Map</button>
-			<button type="button" class="togglebutton" onclick="showMap('right')">Right Map</button>
-			<button type="button" class="togglebutton" onclick="showMap('all')">All Maps</button>
-		</div></div>
+			<div style="float: left;"><label>Colour range:</label> <input id="numberColorDif" style="width: 40px;" type="number" min="3" max="9" step="2" value="7"
+				    onchange="selectNumberDifFunc()"></div>
+			<div style="float: left;">
+				<button type="button" class="togglebutton" onclick="showMap('left')">Left Map</button>
+				<button type="button" class="togglebutton" onclick="showMap('central')">Central Map</button>
+				<button type="button" class="togglebutton" onclick="showMap('right')">Right Map</button>
+				<button type="button" class="togglebutton" onclick="showMap('all')">All Maps</button>
+			</div>
+		</div>
 		<br>
 		<p id="infotext">Hover over choropleth shapes to show more information.</p><br><br>
 	</div>
@@ -386,7 +386,7 @@
 			$('#ocRight').width(900 - $('#dragwrapper-right').position().left - handleWidth);
 		}
 
-		
+
 		$('#dragwrapper-left').on('drag', function () {
 			$('#map-left').width($('#dragwrapper-left').position().left + handleWidth);
 
@@ -444,14 +444,14 @@
 
 		// the functions from the tutorial to color and style the maps
 		function getColor(d) {
-			return d > 1000 ? '#084594': 	//'#800026' :
-				d > 500 ? '#2171b5': 		//'#BD0026' :
-				d > 200 ? '#4292c6':		//'#E31A1C':
-				d > 100 ? '#6baed6':		//'#FC4E2A' :
-				d > 50 ? '#9ecae1':			//'#FD8D3C':
-				d > 20 ? '#c6dbef':			//'#FEB24C':
-				d > 10 ? '#deebf7':			//'#FED976':
-				'#f7fbff';					//'#FFEDA0';
+			return d > 1000 ? '#084594' : //'#800026' :
+				d > 500 ? '#2171b5' : //'#BD0026' :
+				d > 200 ? '#4292c6' : //'#E31A1C':
+				d > 100 ? '#6baed6' : //'#FC4E2A' :
+				d > 50 ? '#9ecae1' : //'#FD8D3C':
+				d > 20 ? '#c6dbef' : //'#FEB24C':
+				d > 10 ? '#deebf7' : //'#FED976':
+				'#f7fbff'; //'#FFEDA0';
 		}
 
 		function style(feature) {
@@ -882,8 +882,6 @@
 		midLegend = createLegendDif('Middle Map', colorscaleDif, 9);
 		document.getElementById('legendAll').innerHTML = outerLegend + midLegend;
 
-
-
 		function selectNumberDifFunc() {
 			// selected number
 			var numb = parseInt(document.getElementById("numberColorDif").value);
@@ -910,6 +908,29 @@
 			}
 
 			geojson_mid.addTo(midmap);
+		}
+
+		// stopwatch
+		var stopwatch_running = false;
+		var stopwatch_starttime = (new Date()).getTime();
+		var stopwatch_interval;
+
+		function start_stopwatch() {
+			if (!stopwatch_running) {
+				stopwatch_running = true;
+				stopwatch_starttime = new Date().getTime();
+				stopwatch_interval = setInterval(function () {
+					let passed_time = (new Date().getTime() - stopwatch_starttime) / 1000;
+					document.getElementById("controltime").innerHTML = passed_time + " s";
+				}, 30);
+			}
+		}
+
+		function stop_stopwatch() {
+			if (stopwatch_running) {
+				stopwatch_running = false;
+				clearInterval(stopwatch_interval);
+			}
 		}
 	</script>
 </body>

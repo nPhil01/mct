@@ -19,13 +19,54 @@
 		}
 
 		#map-left {
-			width: 900px;
+			width: 500px;
 			height: 450px;
 		}
 
 		#map-right {
-			width: 900px;
+			width: 500px;
 			height: 450px;
+		}
+
+		.map {
+			border: 1px solid gray;
+			border-radius: 2px;
+			float: left;
+		}
+
+		#container-left {
+			float: left;
+			margin-right: 10px;
+		}
+
+		#container-right {
+			float: left;
+			margin-right: 10px;
+		}
+
+		#title-left {
+			z-index: 1000;
+			text-align: center;
+			margin: 10px;
+		}
+
+		#title-right {
+			text-align: center;
+			z-index: 1000;
+			margin: 10px;
+		}
+
+		#legendAll {
+			float: left;
+			border-radius: 2px;
+		}
+
+		#infobox {
+			float: left;
+		}
+
+		#container {
+			float: left;
 		}
 	</style>
 
@@ -33,32 +74,37 @@
 
 <body>
 	<div id="container">
-		<h2>Before Map</h2>
-		<div id="map-left"></div>
-		<div id="infobox">
-			<p id="infotext">Hover over choropleth shapes to show more information.</p>
+		<div id="container-left">
+			<h3 id="title-left">Before Map</h3>
+			<div class="map" id="map-left"></div>
 		</div>
-		<h2>After Map</h2>
-		<div id="map-right"></div>
+		<div id="container-right">
+			<h3 id="title-right">After Map</h3>
+			<div class="map" id="map-right">
+			</div>
+		</div>
 		<div id="legendAll"></div>
 	</div>
-	
 	<br>
-	<p>&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors</p><br>
+	<div id="infobox">
+		<p id="infotext">Hover over choropleth shapes to show more information.</p>
+		<p>&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors</p>
+	</div>
+
+	<br>
 	<script>
-		
 		var leftmap = L.map('map-left', {
 			center: [37.8, -96],
 			zoom: 4,
 			zoomAnimation: false,
-			attributionControl: true,
+			attributionControl: false,
 			zoomControl: false
 		});
 		var rightmap = L.map('map-right', {
 			center: [37.8, -96],
 			zoom: 4,
 			zoomAnimation: false,
-			attributionControl: false,
+			attributionControl: true,
 			zoomControl: false
 		});
 
@@ -69,17 +115,17 @@
 
 		L.tileLayer(basemap, basemap_options).addTo(leftmap);
 		L.tileLayer(basemap, basemap_options).addTo(rightmap);
-	
+
 		// the functions from the tutorial to color and style the maps
 		function getColor(d) {
-			return d > 1000 ? '#084594': 	//'#800026' :
-				d > 500 ? '#2171b5': 		//'#BD0026' :
-				d > 200 ? '#4292c6':		//'#E31A1C':
-				d > 100 ? '#6baed6':		//'#FC4E2A' :
-				d > 50 ? '#9ecae1':			//'#FD8D3C':
-				d > 20 ? '#c6dbef':			//'#FEB24C':
-				d > 10 ? '#deebf7':			//'#FED976':
-				'#f7fbff';					//'#FFEDA0';
+			return d > 1000 ? '#084594' : //'#800026' :
+				d > 500 ? '#2171b5' : //'#BD0026' :
+				d > 200 ? '#4292c6' : //'#E31A1C':
+				d > 100 ? '#6baed6' : //'#FC4E2A' :
+				d > 50 ? '#9ecae1' : //'#FD8D3C':
+				d > 20 ? '#c6dbef' : //'#FEB24C':
+				d > 10 ? '#deebf7' : //'#FED976':
+				'#f7fbff'; //'#FFEDA0';
 		}
 
 		function style(feature) {
@@ -92,15 +138,15 @@
 				fillColor: getColor(feature.properties.density)
 			};
 		}
-		
+
 		function resetInfo() {
 			$('#infotext')[0].innerHTML = "Hover over choropleth shapes to show more information.";
 		}
 
 		function setInfo(properties) {
-				$('#infotext')[0].innerHTML = properties.name + ": " + properties.density;
+			$('#infotext')[0].innerHTML = properties.name + ": " + properties.density;
 		}
-		
+
 		function highlightFeature(e) {
 			var layer = e.target;
 
@@ -155,7 +201,7 @@
 			onEachFeature: onEachFeatureR
 		}).addTo(rightmap);
 
-
+		// create the legend
 		createLegend = function (label) {
 			var div = '<div style="width:130px"><h4>' + label + '</h4>';
 			var grades = [0, 10, 20, 50, 100, 200, 500, 1000];
@@ -170,9 +216,7 @@
 			return div;
 		};
 
-		
 		document.getElementById('legendAll').innerHTML = createLegend('Legend');
-
 	</script>
 </body>
 

@@ -68,6 +68,9 @@
 		}
 
 		hr {
+			border: 0;
+			height: 1px;
+			background: gray;
 			float: left;
 			width: 100%;
 		}
@@ -165,6 +168,11 @@
 		}
 
 		function setInfo(properties, target) {
+			if (target == "compare") {
+				$('#infotext-' + target)[0].innerHTML = properties.name + ": " + properties.density_diff;
+				return;
+			}
+
 			$('#infotext-' + target)[0].innerHTML = properties.name + ": " + properties.density;
 		}
 
@@ -180,7 +188,20 @@
 
 			layer.bringToFront();
 			setInfo(layer.feature.properties, "before");
+		}
 
+		function highlightFeatureM(e) {
+			var layer = e.target;
+
+			layer.setStyle({
+				weight: 3,
+				color: '#55DDFF',
+				dashArray: '',
+				fillOpacity: 1
+			});
+
+			layer.bringToFront();
+			setInfo(layer.feature.properties, "compare");
 		}
 
 		function highlightFeatureR(e) {
@@ -224,6 +245,160 @@
 		}
 
 
+		// creating the difference map + color scale
+		var diffData = {
+			"type": "FeatureCollection",
+			"features": []
+		};
+		var colormin = 0;
+		var colormax = 0;
+		var leftlowerhalf = 0;
+		var leftmiddlequarter = 0;
+
+		var rightmiddlequarter = 0;
+		var rightupperhalf = 0;
+		// the inner quarters are < or > 0
+
+		for (let dataset = 0; dataset < statesData.features.length; dataset++) {
+			let ldata = statesData.features[dataset];
+			let rdata = statesData2.features[dataset];
+
+			// generate difference choropleth dataset
+			let newdata = {
+				type: "Feature",
+				id: "" + (dataset + 1) + "",
+				properties: {
+					name: ldata.properties.name,
+					density_diff: rdata.properties.density - ldata.properties.density,
+					density_left: ldata.properties.density,
+					density_right: rdata.properties.density
+				},
+				geometry: ldata.geometry
+			};
+
+			// search for lowest/highest values
+			if (newdata.properties.density_diff < colormin) colormin = newdata.properties.density_diff;
+			if (newdata.properties.density_diff > colormax) colormax = newdata.properties.density_diff;
+			diffData.features.push(newdata);
+		}
+
+		// create color scale
+		var colorscaleDif = [colormin / 2, colormin / 4, colormin / 6, 0, colormax / 6, colormax / 4, colormax / 2];
+
+		function getColorDensity(d) {
+			return d < colorscaleDif[1] ? "#f03b20" : //'#ff3f3f':
+				d < colorscaleDif[3] ? "#feb24c" : //"#ff993f" : 
+				d > colorscaleDif[5] ? "#31a354" : //'#20ed83' :  
+				d > colorscaleDif[3] ? "#addd8e" : //"#91ff42" :  
+				'#ffffb2';
+		}
+
+
+		function styleDifference(feature) {
+			return {
+				weight: 2,
+				opacity: 1,
+				color: 'white',
+				dashArray: '3',
+				fillOpacity: 1,
+				fillColor: getColorDensity(feature.properties.density_diff)
+			};
+		}
+
+		function resetHighlightM(e) {
+			selectNumberDifFunc();
+			resetInfo("compare");
+		}
+
+		function onEachFeatureM(feature, layer) {
+			layer.on({
+				mouseover: highlightFeatureM,
+				mouseout: resetHighlightM
+			});
+		}
+
+		var geojson_mid = L.geoJson(diffData, {
+			style: styleDifference,
+			onEachFeature: onEachFeatureM
+		}).addTo(midmap);
+
+		function styleDifference(feature) {
+			return {
+				weight: 2,
+				opacity: 1,
+				color: 'white',
+				dashArray: '3',
+				fillOpacity: 1,
+				fillColor: getColorDensity(feature.properties.density_diff)
+			};
+		}
+
+		function selectNumberDifFunc() {
+			// selected number
+			var newGrades = [];
+
+			newGrades = getNewGrades();
+
+			midLegend = createLegendDif('Middle Map', newGrades);
+			document.getElementById('legendAll-compare').innerHTML = midLegend;
+
+			midmap.eachLayer(function (layer) {
+				if (layer === (geojson_mid)) {
+					midmap.removeLayer(layer);
+				}
+			});
+
+
+			geojson_mid.setStyle(styleDifference);
+
+
+			geojson_mid.addTo(midmap);
+		}
+
+
+
+		// create the legend of the differences
+		function createLegendDif(label, grades) {
+			grades.push(grades[grades.length - 1] + 1);
+			var div = '<div style="width:130px"><h4>' + label + '</h4>';
+			div += '<div style="background:' + getColorDensity(grades[0] - 1) + ';"> &lt;' + grades[0] + '</div>';
+
+			var i = 0;
+			for (; i + 1 < grades.length; i++) {
+				if (grades[i] < 0) {
+					div += '<div style="background:' + getColorDensity(grades[i]) + ';">' + grades[i] +
+						'&ndash;' + grades[i + 1] + '</div>';
+				} else {
+					if (grades[i] === 0) {
+						div += '<div style="background:' + getColorDensity(grades[i]) + ';">' + grades[i] +
+							'</div>';
+					} else {
+						div += '<div style="background:' + getColorDensity(grades[i]) + ';">' + grades[i - 1] +
+							'&ndash;' + grades[i] + '</div>';
+					}
+				}
+			}
+			div += '<div style="background:' + getColorDensity(grades[i]) + ';">' +
+				(grades[i]) + '+</div>';
+
+			div += '</div>';
+			return div;
+		};
+
+		function getNewGrades() {
+			let grades = [];
+			let temp = [1 / 4];
+
+			for (var i = 0; i < temp.length; i++) {
+				grades.push(colormin * temp[i]);
+			}
+			grades.push(0);
+			for (i--; i >= 0; i--) {
+				grades.push(colormax * temp[i]);
+			}
+			return grades;
+		}
+
 		// load data into the maps
 		var geojson_left = L.geoJson(statesData, {
 			style: style,
@@ -250,6 +425,7 @@
 			return div;
 		};
 
+		document.getElementById('legendAll-compare').innerHTML = createLegendDif("Legend", getNewGrades())
 		document.getElementById('legendAll-before').innerHTML = createLegend('Legend');
 		document.getElementById('legendAll-after').innerHTML = createLegend('Legend');
 	</script>

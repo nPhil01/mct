@@ -16,14 +16,22 @@
 			font-family: Sans-Serif;
 		}
 
-		#map-left {
-			width: 500px;
+		#map-before {
+			width: 900px;
 			height: 450px;
+			margin-right: 10px;
 		}
 
-		#map-right {
-			width: 500px;
+		#map-after {
+			width: 900px;
 			height: 450px;
+			margin-right: 10px;
+		}
+
+		#map-compare {
+			width: 900px;
+			height: 450px;
+			margin-right: 10px;
 		}
 
 		.map {
@@ -32,71 +40,78 @@
 			float: left;
 		}
 
-		#container-left {
+		#container-before {
 			float: left;
 			margin-right: 10px;
+			width: 100%;
 		}
 
-		#container-right {
+		#container-after {
 			float: left;
 			margin-right: 10px;
+			width: 100%;
 		}
 
-		#title-left {
-			z-index: 1000;
+		#title-before, #title-after {
 			text-align: center;
 			margin: 10px;
+			width: 100%;
+			float: left;
 		}
 
-		#title-right {
-			text-align: center;
-			z-index: 1000;
-			margin: 10px;
-		}
-
-		#legendAll {
+		#legendAll-before,
+		#legendAll-after {
 			float: left;
 			border-radius: 2px;
 		}
 
-		#container {
+		#container-before,
+		container-after {
 			float: left;
 			width: 100%;
 		}
-		#infobox {
+
+		#infobox-after,
+		#infobox-before {
 			float: left;
+		}
+
+		hr {
+			float: left;
+			width: 100%;
 		}
 	</style>
 
 </head>
 
 <body>
-	<div id="container">
-		<div id="container-left">
-			<h3 id="title-left">Before Map</h3>
-			<div class="map" id="map-left"></div>
-		</div>
-		<div id="container-right">
-			<h3 id="title-right">After Map</h3>
-			<div class="map" id="map-right">
-			</div>
-		</div>
-		<div id="legendAll"></div>
+	<h3 id="title-before">Before</h3>
+	<div id="container-before">
+		<div class="map" id="map-before"></div>
+		<div id="legendAll-before"></div>
 	</div>
-	<div id="infobox">
-		<p id="infotext">Hover over choropleth shapes to show more information.</p>
+	<div id="infobox-before">
+		<p id="infotext-before">Hover over choropleth shapes to show more information.</p>
+	</div>
+	<hr>
+	<h3 id="title-after">After</h3>
+	<div id="container-after">	
+		<div class="map" id="map-after"></div>
+		<div id="legendAll-after"></div>
+	</div>
+	<div id="infobox-after">
+		<p id="infotext-after">Hover over choropleth shapes to show more information.</p>
 	</div>
 
-	<br>
 	<script>
-		var leftmap = L.map('map-left', {
+		var leftmap = L.map('map-before', {
 			center: [37.8, -96],
 			zoom: 4,
 			zoomAnimation: false,
 			attributionControl: false,
 			zoomControl: false
 		});
-		var rightmap = L.map('map-right', {
+		var rightmap = L.map('map-after', {
 			center: [37.8, -96],
 			zoom: 4,
 			zoomAnimation: false,
@@ -137,15 +152,15 @@
 			};
 		}
 
-		function resetInfo() {
-			$('#infotext')[0].innerHTML = "Hover over choropleth shapes to show more information.";
+		function resetInfo(target) {
+			$('#infotext-' + target)[0].innerHTML = "Hover over choropleth shapes to show more information.";
 		}
 
-		function setInfo(properties) {
-			$('#infotext')[0].innerHTML = properties.name + ": " + properties.density;
+		function setInfo(properties, target) {
+			$('#infotext-' + target)[0].innerHTML = properties.name + ": " + properties.density;
 		}
 
-		function highlightFeature(e) {
+		function highlightFeatureL(e) {
 			var layer = e.target;
 
 			layer.setStyle({
@@ -155,34 +170,47 @@
 				fillOpacity: 1
 			});
 
-			if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-				layer.bringToFront();
-			}
-
-			setInfo(layer.feature.properties);
+			layer.bringToFront();
+			setInfo(layer.feature.properties, "before");
 
 		}
 
+		function highlightFeatureR(e) {
+			var layer = e.target;
+
+			layer.setStyle({
+				weight: 3,
+				color: '#55DDFF',
+				dashArray: '',
+				fillOpacity: 1
+			});
+
+			layer.bringToFront();
+			setInfo(layer.feature.properties, "after");
+
+		}
+
+
 		function resetHighlightR(e) {
 			geojson_right.resetStyle(e.target);
-			resetInfo();
+			resetInfo("after");
 		}
 
 		function resetHighlightL(e) {
 			geojson_left.resetStyle(e.target);
-			resetInfo();
+			resetInfo("before");
 		}
 
 		function onEachFeatureR(feature, layer) {
 			layer.on({
-				mouseover: highlightFeature,
+				mouseover: highlightFeatureR,
 				mouseout: resetHighlightR
 			});
 		}
 
 		function onEachFeatureL(feature, layer) {
 			layer.on({
-				mouseover: highlightFeature,
+				mouseover: highlightFeatureL,
 				mouseout: resetHighlightL
 			});
 		}
@@ -214,7 +242,8 @@
 			return div;
 		};
 
-		document.getElementById('legendAll').innerHTML = createLegend('Legend');
+		document.getElementById('legendAll-before').innerHTML = createLegend('Legend');
+		document.getElementById('legendAll-after').innerHTML = createLegend('Legend');
 	</script>
 </body>
 

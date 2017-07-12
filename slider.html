@@ -6,11 +6,9 @@
 	<title>Maptest</title>
 
 	<link rel="stylesheet" href="./leaflet/leaflet.css" />
-	<link rel="stylesheet" href="./leaflet-search.min.css" />
 	<script src="./leaflet/leaflet.js"></script>
 	<script src="./jquery.min.js"></script>
 	<script src="./jquery-ui.min.js"></script>
-	<script src="./leaflet-search.min.js"></script>
 	<script src="./us_states.js"></script>
 	<script src="./us_states_2_variation.js"></script>
 	<style>
@@ -236,7 +234,6 @@
 			<button type="button" class="togglebutton" onclick="showMap('right')">Right Map</button>
 			<button type="button" class="togglebutton" onclick="showMap('all')">All Maps</button>
 		</div>
-		<div id="search" style="float: left;"></div>
 		<br>
 		<p id="infotext">Hover over choropleth shapes to show more information.</p><br><br>
 	</div>
@@ -497,44 +494,6 @@
 			style: style,
 			onEachFeature: onEachFeatureR
 		}).addTo(rightmap);
-
-		var searchControl = new L.Control.Search({
-			layer: geojson_left,
-			propertyName: 'name',
-			marker: false,
-			moveToLocation: function (latlng, title, leftmap) {
-				//map.fitBounds( latlng.layer.getBounds() );
-				var zoom = leftmap.getBoundsZoom(latlng.layer.getBounds());
-				leftmap.setView(latlng, zoom); // access the zoom
-			}
-		});
-
-		searchControl.on('search:locationfound', function (e) {
-
-			if (e.layer._popup)
-				e.layer.openPopup();
-
-		}).on('search:collapsed', function (e) {
-
-			geojson_left.eachLayer(function (layer) { //restore feature color
-				geojson_left.resetStyle(layer);
-			});
-		});
-
-		searchControl.on('search:collapsed', function (e) {
-			leftmap.setView([37.8, -96], 4);
-		});
-
-		leftmap.addControl(searchControl); //initialise search control
-
-		var htmlObject = searchControl.getContainer();
-
-		var a = document.getElementById('search');
-
-		function setParent(el, newParent) {
-			newParent.appendChild(el);
-		}
-		setParent(htmlObject, a);
 
 		function showMap(whichMap) {
 			switch (whichMap) {

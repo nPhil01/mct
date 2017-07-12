@@ -14,7 +14,29 @@
 	<style>
 		body {
 			font-family: Sans-Serif;
+			margin: 0px;
 		}
+
+
+		#outercontrolbox {
+			float: right;
+			width: 160px;
+			height: 100%;
+			padding: 0px;
+			margin: 0px;
+		}
+
+		#controlbox {
+			z-index: 10000;
+			background-color: #fff;
+			border-left: 1px solid gray;
+			width: 160px;
+			height: 100%;
+			position: fixed;
+			padding: 10px;
+			margin: 0px;
+		}
+
 
 		.map {
 			height: 450px;
@@ -49,7 +71,8 @@
 			width: 1040px;
 			height: 450px;
 			border-radius: 2px 2px 0px 0px;
-			margin: 0 auto;
+			margin-left: 30px;
+			margin-top: 15px;
 		}
 
 		#labels {
@@ -175,8 +198,9 @@
 			display: block;
 			width: 1040px;
 			border-radius: 0px 0px 2px 2px;
-			margin: 0 auto;
+			margin-left: 30px;
 			position: relative;
+
 		}
 
 		#infotext {
@@ -184,6 +208,7 @@
 			margin-right: 5px;
 			float: right;
 			vertical-align: middle;
+			width: 100%;
 		}
 
 		#legendAll {
@@ -200,6 +225,15 @@
 </head>
 
 <body>
+	<div id="outercontrolbox">
+		<div id="controlbox">
+			<h3>Stoppuhr:</h3>
+			<p id="controltime">nicht gestartet</p>
+			<button id="startbutton" onclick="start_stopwatch()">Start</button>
+			<br><br>
+			<button id="stopbutton" onclick="stop_stopwatch()">Stop</button>
+		</div>
+	</div>
 	<div id="container">
 		<div class="overflowContainer" id="ocLeft">
 			<h5 class="mapLabels" id="labelBefore">Map Before</h5>
@@ -227,6 +261,7 @@
 		<div id="legendAll"></div>
 	</div>
 	<div id="infobox">
+		<div style=" padding: 5px;">
 		<div style="float: left;"><label>Colour range:</label> <input id="numberColorDif" style="width: 40px;" type="number" min="3" max="9" step="2" value="7"
 			    onchange="selectNumberDifFunc()"></div>
 		<div style="float: left;">
@@ -234,7 +269,7 @@
 			<button type="button" class="togglebutton" onclick="showMap('central')">Central Map</button>
 			<button type="button" class="togglebutton" onclick="showMap('right')">Right Map</button>
 			<button type="button" class="togglebutton" onclick="showMap('all')">All Maps</button>
-		</div>
+		</div></div>
 		<br>
 		<p id="infotext">Hover over choropleth shapes to show more information.</p><br><br>
 	</div>

@@ -16,18 +16,8 @@
 			font-family: Sans-Serif;
 		}
 
-		#map-before {
-			width: 900px;
-			height: 450px;
-			margin-right: 10px;
-		}
-
-		#map-after {
-			width: 900px;
-			height: 450px;
-			margin-right: 10px;
-		}
-
+		#map-before,
+		#map-after,
 		#map-compare {
 			width: 900px;
 			height: 450px;
@@ -40,19 +30,17 @@
 			float: left;
 		}
 
-		#container-before {
-			float: left;
-			margin-right: 10px;
-			width: 100%;
-		}
-
+		#container-before,
+		#container-compare,
 		#container-after {
 			float: left;
 			margin-right: 10px;
 			width: 100%;
 		}
 
-		#title-before, #title-after {
+		#title-before,
+		#title-after,
+		#title-compare {
 			text-align: center;
 			margin: 10px;
 			width: 100%;
@@ -60,19 +48,22 @@
 		}
 
 		#legendAll-before,
+		#legendAll-compare,
 		#legendAll-after {
 			float: left;
 			border-radius: 2px;
 		}
 
 		#container-before,
-		container-after {
+		#container-after,
+		#container-compare {
 			float: left;
 			width: 100%;
 		}
 
 		#infobox-after,
-		#infobox-before {
+		#infobox-before,
+		#infobox-compare {
 			float: left;
 		}
 
@@ -94,8 +85,17 @@
 		<p id="infotext-before">Hover over choropleth shapes to show more information.</p>
 	</div>
 	<hr>
+	<h3 id="title-compare">Comparison</h3>
+	<div id="container-compare">
+		<div class="map" id="map-compare"></div>
+		<div id="legendAll-compare"></div>
+	</div>
+	<div id="infobox-compare">
+		<p id="infotext-compare">Hover over choropleth shapes to show more information.</p>
+	</div>
+	<hr>
 	<h3 id="title-after">After</h3>
-	<div id="container-after">	
+	<div id="container-after">
 		<div class="map" id="map-after"></div>
 		<div id="legendAll-after"></div>
 	</div>
@@ -105,6 +105,13 @@
 
 	<script>
 		var leftmap = L.map('map-before', {
+			center: [37.8, -96],
+			zoom: 4,
+			zoomAnimation: false,
+			attributionControl: false,
+			zoomControl: false
+		});
+		var midmap = L.map('map-compare', {
 			center: [37.8, -96],
 			zoom: 4,
 			zoomAnimation: false,
@@ -127,6 +134,7 @@
 		};
 
 		L.tileLayer(basemap, basemap_options).addTo(leftmap);
+		L.tileLayer(basemap, basemap_options).addTo(midmap);
 		L.tileLayer(basemap, basemap_options).addTo(rightmap);
 
 		// the functions from the tutorial to color and style the maps

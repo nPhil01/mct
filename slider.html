@@ -330,26 +330,28 @@
 			axis: "x"
 		});
 
+		var handleWidth = 32;
+
 		function moveLeftLabels() {
 			$("#ocComparison").css({
-				left: ($('#dragwrapper-left').position().left) + 'px'
+				left: ($('#dragwrapper-left').position().left + handleWidth) + 'px'
 			});
 			$('#ocComparison').width($('#dragwrapper-right').position().left - $('#dragwrapper-left').position().left);
-			$('#ocLeft').width($('#dragwrapper-left').position().left);
+			$('#ocLeft').width($('#dragwrapper-left').position().left + handleWidth);
 		}
 
 		function moveRightLabels() {
 			$("#ocComparison").css({
-				left: ($('#dragwrapper-left').position().left) + 'px'
+				left: ($('#dragwrapper-left').position().left + handleWidth) + 'px'
 			});
 			$('#ocComparison').width($('#dragwrapper-right').position().left - $('#dragwrapper-left').position().left);
 			$("#ocRight").css({
-				left: ($('#dragwrapper-right').position().left) + 'px'
+				left: ($('#dragwrapper-right').position().left + handleWidth) + 'px'
 			});
-			$('#ocRight').width(900 - $('#dragwrapper-right').position().left);
+			$('#ocRight').width(900 - $('#dragwrapper-right').position().left - handleWidth);
 		}
 
-		var handleWidth = 32;
+		
 		$('#dragwrapper-left').on('drag', function () {
 			$('#map-left').width($('#dragwrapper-left').position().left + handleWidth);
 
@@ -499,23 +501,23 @@
 		function showMap(whichMap) {
 			switch (whichMap) {
 				case "left":
-					document.getElementById("dragwrapper-left").style.left = "850px";
-					document.getElementById("dragwrapper-right").style.left = "870px";
+					document.getElementById("dragwrapper-left").style.left = "838px";
+					document.getElementById("dragwrapper-right").style.left = "838px";
 					updateSlider();
 					break;
 				case "central":
 					document.getElementById("dragwrapper-left").style.left = "0px";
-					document.getElementById("dragwrapper-right").style.left = "870px";
+					document.getElementById("dragwrapper-right").style.left = "838px";
 					updateSlider();
 					break;
 				case "right":
 					document.getElementById("dragwrapper-left").style.left = "0px";
-					document.getElementById("dragwrapper-right").style.left = "20px";
+					document.getElementById("dragwrapper-right").style.left = "0px";
 					updateSlider();
 					break;
 				case "all":
-					document.getElementById("dragwrapper-left").style.left = "285px";
-					document.getElementById("dragwrapper-right").style.left = "585px";
+					document.getElementById("dragwrapper-left").style.left = "268px";
+					document.getElementById("dragwrapper-right").style.left = "568px";
 					updateSlider();
 			}
 
@@ -524,8 +526,8 @@
 		}
 
 		function updateSlider() {
-			$('#map-left').width($('#dragwrapper-left').position().left + 16);
-			$('#map-mid').width($('#dragwrapper-right').position().left + 16);
+			$('#map-left').width($('#dragwrapper-left').position().left + 32);
+			$('#map-mid').width($('#dragwrapper-right').position().left + 32);
 		}
 
 		// creating the difference map + color scale

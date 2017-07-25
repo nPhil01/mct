@@ -1,5 +1,5 @@
 # mct
-A possibility to compare your choropleth maps
+A possibility to compare two choropleth maps. No installation required, opening the html in a (up-to-date) webbrowser should suffice.
 
 ## Relevant branches:
 * reverse_engineered: Contains the slider prototype.
